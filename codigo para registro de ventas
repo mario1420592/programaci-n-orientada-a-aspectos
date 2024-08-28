@@ -1,0 +1,41 @@
+ #registrar_venta es un decorador que recibe una función (func) como argumento.
+ #Utilizamos Wrapper la cual es una funcion que nos permite ejecutar el codigo adicional antes y después de la función original.
+ #usamos los argumentos *args y **kwargs los cuales permiten que el wrapper acepte cualquier número y tipo de argumentos, tanto posicionales como nombrados.
+ #Después de que la función original se haya ejecutado, se imprime un mensaje indicando que la venta ha sido completada.
+def registrar_venta(func):
+
+    def wrapper(*args, **kwargs):
+        print(f"Registro: Se está realizando una venta con los detalles: {args} {kwargs}")
+        resultado = func(*args, **kwargs)
+        print("Registro: Venta completada.")
+        return resultado
+    return wrapper
+
+ #Decorador @registrar_venta decorador que se aplica al método vender_producto, lo que significa que cada vez que se llame a este método, primero se ejecutará el código de registro definido en el decorador.
+ #Argumentos:
+ #self: Referencia a la instancia actual de la clase Tienda.
+ #producto: El nombre del producto que se va a vender.
+ #cantidad: La cantidad de producto que se va a vender.
+ #Lógica de venta: Este método imprime un mensaje indicando que se están vendiendo una cierta cantidad de un producto. Aquí podrías agregar lógica adicional, como la actualización del inventario.
+
+class Tienda:
+    @registrar_venta
+    def vender_producto(self, producto, cantidad):
+        # Lógica de venta
+        print(f"Vendiendo {cantidad} unidades de {producto}.")
+        # Aquí podrías agregar la lógica de actualización del inventario, etc.
+
+# Ejemplo de uso
+mi_tienda = Tienda()
+mi_tienda.vender_producto("Camiseta", 3)
+class Tienda:
+    @registrar_venta
+    def vender_producto(self, producto, cantidad):
+
+        # Lógica de venta
+        print(f"Vendiendo {cantidad} unidades de {producto}.")
+        # Aquí podrías agregar la lógica de actualización del inventario, etc.
+
+# Ejemplo de uso
+mi_tienda = Tienda()
+mi_tienda.vender_producto("Camiseta", 3)
