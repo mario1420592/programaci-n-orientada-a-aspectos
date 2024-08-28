@@ -1,0 +1,39 @@
+# Este codigo nos permite autenticar la identidad de una persona que desee realizar pago
+# Utilizamos Wrapper la cual es una funcion que nos permite ejecutar el codigo adicional antes y después de la función original.
+# usamos los argumentos *args y **kwargs los cuales permiten que el wrapper acepte cualquier número y tipo de argumentos, tanto posicionales como nombrados. 
+# Para la verificación del usuario Se intenta obtener el usuario de los argumentos con kwargs.get('usuario'). Si el usuario no existe o no está autenticado (usuario.get('autenticado') devuelve False o None), se imprime un mensaje de error y se retorna None, deteniendo la ejecución de la función original.
+# Si el usuario está autenticado, se imprime un mensaje confirmando la autenticación. Se llama a la función original (func) con los mismos argumentos.
+# Finalmente, el decorador retorna la función wrapper en lugar de la función original, por lo que esta será la que se ejecute.
+def requiere_autenticacion(func):
+    def wrapper(*args, **kwargs):
+        usuario = kwargs.get('usuario')
+        if not usuario or not usuario.get('autenticado'):
+            print("Error: Usuario no autenticado. No se puede procesar el pago.")
+            return None
+        print(f"Autenticación verificada para el usuario: {usuario['nombre']}")
+        return func(*args, **kwargs)
+     return wrapper
+#  El decorador requiere_autenticacion se aplica al método procesar_pago. Esto significa que cada vez que se llame a procesar_pago, primero se ejecutará el código del decorador.
+# Método procesar_pago:
+# Argumentos:
+# self: Referencia a la instancia actual de la clase Tienda.
+# monto: La cantidad de dinero que se va a procesar.
+# usuario: Un diccionario que contiene la información del usuario.
+# Si el usuario está autenticado (verificado por el decorador), se imprime un mensaje indicando que se está procesando el pago para ese usuario.
+class Tienda:
+    @requiere_autenticacion
+    def procesar_pago(self, monto, usuario):
+        # Lógica de procesamiento de pago
+        print(f"Procesando pago de ${monto} para {usuario['nombre']}.")
+
+# Ejemplo de uso
+usuario_autenticado = {"nombre": "Juan", "autenticado": True}
+usuario_no_autenticado = {"nombre": "Ana", "autenticado": False}
+
+mi_tienda = Tienda()
+
+# Usuario autenticado
+mi_tienda.procesar_pago(100, usuario=usuario_autenticado)
+
+# Usuario no autenticado
+mi_tienda.procesar_pago(200, usuario=usuario_no_autenticado)
